@@ -1,0 +1,20 @@
+type UserNft @entity {
+  id: ID!
+  userAddress: Bytes!
+  tokenId: BigInt!
+  transactions: [UserTransaction!]! @derivedFrom(field: "userNft")
+}
+
+type UserTransaction @entity {
+  #Transaction hash-LogIndex
+  id: ID!
+  transactionHash: Bytes!
+  block: BigInt!
+  timestamp: BigInt!
+  userNft: UserNft! @link(from: "id")
+}
+
+type Nft @entity {
+  id: ID!
+  nftId: BigInt!
+}
