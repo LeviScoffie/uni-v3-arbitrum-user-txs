@@ -4,11 +4,14 @@ import {
   Transfer,
   Collect,
 } from "../../generated/NonFungiblePositionManager/NonFungiblePositionManager";
-
+import {
+  determineIncreaseLiquidityUserNftAddress,
+  determineDecreaseLiquidityUserNftAddress,
+  determineCollectUserNftAddress,
+} from "./helpers";
 import { isZeroAddress } from "../utils/constants";
 import { getOrCreateNft, getOrCreateUserNft } from "../entities/usernft";
-import { getOrCreateUserTransaction } from "../entities/usertransaction";
-import { Nft, UserNft } from "../../generated/schema";
+import { getOrCreateUserTransactions } from "../entities/usertransaction";
 
 export function handleTransfer(event: Transfer): void {
   const toAddress = event.params.to;
@@ -19,21 +22,29 @@ export function handleTransfer(event: Transfer): void {
   }
 }
 
-function determineUserNftAddress(event: IncreaseLiquidity): string {
-  const fromAddress = event.transaction.from.toHexString();
-  const toAddress = event.transaction.to ? event.transaction.to.toHexString() : "";
-  const tokenId = event.params.tokenId.toString();
-  let userNft = UserNft.load(fromAddress + "-" + tokenId)
-  if (userNft) {
-    return fromAddress;
+export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
+  const userAddresses = determineIncreaseLiquidityUserNftAddress(event);
+  if (userAddresses) {
+    userAddresses.forEach((userAddress) => {
+      getOrCreateUserTransactions(event, userAddress);
+    });
   }
-  return toAddress 
 }
 
-export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
-  const userAddress = determineUserNftAddress(event);
-  const userNft = UserNft.load(userAddress + "-" + event.params.tokenId.toString());
-  if (userNft) {
-    getOrCreateUserTransaction(event, userNft);
+export function handleCollect(event: Collect): void {
+  const userAddresses = determineCollectUserNftAddress(event);
+  if (userAddresses) {
+    userAddresses.forEach((userAddress) => {
+      getOrCreateUserTransactions(event, userAddress);
+    });
+  }
+}
+
+export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
+  const userAddresses = determineDecreaseLiquidityUserNftAddress(event);
+  if (userAddresses) {
+    userAddresses.forEach((userAddress) => {
+      getOrCreateUserTransactions(event, userAddress);
+    });
   }
 }

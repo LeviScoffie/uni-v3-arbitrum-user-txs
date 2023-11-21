@@ -8,7 +8,7 @@ dataSources:
     source:
       address: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88"
       abi: NonFungiblePositionManager
-      startBlock: 150020000
+      startBlock: 173
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -21,10 +21,10 @@ dataSources:
         - name: NonFungiblePositionManager
           file: ./abis/NonFungiblePositionManager.json
       eventHandlers:
-        # - event: Collect(indexed uint256,address,uint256,uint256)
-        #   handler: handleCollect
-        # - event: DecreaseLiquidity(indexed uint256,uint128,uint256,uint256)
-        #   handler: handleDecreaseLiquidity
+        - event: Collect(indexed uint256,address,uint256,uint256)
+          handler: handleCollect
+        - event: DecreaseLiquidity(indexed uint256,uint128,uint256,uint256)
+          handler: handleDecreaseLiquidity
         - event: IncreaseLiquidity(indexed uint256,uint128,uint256,uint256)
           handler: handleIncreaseLiquidity
         - event: Transfer(indexed address,indexed address,indexed uint256)

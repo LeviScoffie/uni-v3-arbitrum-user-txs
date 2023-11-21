@@ -75,14 +75,6 @@ export class UserNft extends Entity {
   set tokenId(value: BigInt) {
     this.set("tokenId", Value.fromBigInt(value));
   }
-
-  get transactions(): UserTransactionLoader {
-    return new UserTransactionLoader(
-      "UserNft",
-      this.get("id")!.toString(),
-      "transactions"
-    );
-  }
 }
 
 export class UserTransaction extends Entity {
@@ -165,8 +157,8 @@ export class UserTransaction extends Entity {
     this.set("timestamp", Value.fromBigInt(value));
   }
 
-  get userNft(): string {
-    let value = this.get("userNft");
+  get userAddress(): string {
+    let value = this.get("userAddress");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -174,8 +166,8 @@ export class UserTransaction extends Entity {
     }
   }
 
-  set userNft(value: string) {
-    this.set("userNft", Value.fromString(value));
+  set userAddress(value: string) {
+    this.set("userAddress", Value.fromString(value));
   }
 }
 
@@ -230,22 +222,17 @@ export class Nft extends Entity {
   set nftId(value: BigInt) {
     this.set("nftId", Value.fromBigInt(value));
   }
-}
 
-export class UserTransactionLoader extends Entity {
-  _entity: string;
-  _field: string;
-  _id: string;
-
-  constructor(entity: string, id: string, field: string) {
-    super();
-    this._entity = entity;
-    this._id = id;
-    this._field = field;
+  get userNft(): Array<string> {
+    let value = this.get("userNft");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toStringArray();
+    }
   }
 
-  load(): UserTransaction[] {
-    let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<UserTransaction[]>(value);
+  set userNft(value: Array<string>) {
+    this.set("userNft", Value.fromStringArray(value));
   }
 }
