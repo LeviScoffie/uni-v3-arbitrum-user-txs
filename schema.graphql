@@ -1,7 +1,8 @@
 type UserNft @entity {
   id: ID!
   userAddress: Bytes!
-  tokenId: BigInt!
+  nft: Bigint
+  # Nft! @link(from: "id")
 }
 
 type UserTransaction @entity {
@@ -15,5 +16,6 @@ type UserTransaction @entity {
 type Nft @entity {
   id: ID!
   nftId: BigInt!
-  userNft: [UserNft!]!
+  userNft: UserNft!
+
 }
